@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+if [ -z ${EDITOR+x} ]; then
+    echo "You must set the EDITOR environment in your shell for exlpore to work correctly."
+    exit
+fi
+
+verbose=false
+edit_text_files=false
+
+while getopts 've' option; do
+    case "${option}" in
+        v) verbose=true;;
+        e) edit_text_files=true;;
+    esac
+done
+shift $((OPTIND - 1))
+
+if [ -z ${1+x} ]; then
+    echo "No file or directory was specified."
+    exit
+fi
+
+
+
+if [ ! -f $1 ] && [ ! -d $1 ]; then
+    echo "File or directory ${1} does not exist."
+    exit;
+fi
+
+if [ -d $1 ]; then
+    # Directory
+    if $verbose; then
+        ls -la $1
+    else
+        ls $1
+    fi
+else
+    # File
+    if file -L $1 | grep -q 'text'; then
+        # Text
+        if $edit_text_files; then
+            ${EDITOR} ${1}
+        else
+            less $1
+        fi
+    else
+        # Binary
+        if $verbose; then
+            ls -la $1
+        else
+            ls $1
+        fi
+    fi
+fi
+
+
