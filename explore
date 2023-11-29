@@ -1,4 +1,10 @@
 #!/usr/bin/env bash
+viewer='less'
+
+if [ -v MORE_OR_LESS ]; then
+    echo "Viewer set to '${MORE_OR_LESS}'."
+    viewer=${MORE_OR_LESS}
+fi
 
 if [ -z ${EDITOR+x} ]; then
     echo "You must set the EDITOR environment in your shell for exlpore to work correctly."
@@ -42,7 +48,7 @@ else
         if $edit_text_files; then
             ${EDITOR} ${1}
         else
-            less $1
+            $viewer $1
         fi
     else
         # Binary
